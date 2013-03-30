@@ -1,29 +1,29 @@
 /*
-                  NAME - MyButami™
+                  NAME - MyButami™ Source©
                AUTHORS - Omkar Ekbote & Swaroop Bhonde
-           DESCRIPTION - Simple Butami Game
+           DESCRIPTION - Development Source-Code for MyButami™ Game
+        COMPAITIBILITY - Borland Turbo C++ IDE (Compilation)
+                         DOS or similar Environment Shell
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.8.1 ALPHA Release
-             DATE/TIME - 06/02/07 18:56
-VERSION SPECIFICATIONS - Truncated Player1() and Player2() to Process()
-                         All known bugs regarding Cancellation() and Splitting() fixed
-                         Saved memory by converting variables to pointers
-            KNOWN BUGS - Splitting() does not work!!!
-                         Cancellation() condition is buggy!
-                         Quit() does not return to Main Menu when prompted 'N'
-        NEXT BIG THING - Truncate Player1() & Player2() to ActvPlayer();
+               VERSION - v0.9.0 BETA
+             DATE/TIME - 15/02/07 22:38
+VERSION SPECIFICATIONS - Initiating v0.9.x BETA League with General Improvements
+                         Fixed Bug in Cancellation()
+                         Compaitaibility of Splitting() with ActvPlayer
+                         Global Commenting for existing Source©
+                         Indentation Corrections
+            KNOWN BUGS - Back-compaitible to v0.8.x League
+                         Quit() needs attention!
+                         EndGame() not integrated with GUI
+        NEXT BIG THING - v0.9.x BETA improves Basic GUI, implementing Graphics Drivers
 
 */
 
-#include <iostream.h>
-#include <conio.h>
-#include <process.h>
-#include <dos.h>
-#include <string.h>
+#include "Header.h"                                 //Custom MyButami™ Source© Header v1.0
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
-short unsigned int *ActvhL, *ActvhR;                               //Virtual: No. of fingers of each hand of Active Player
-short unsigned int *nActvhL, *nActvhR;                             //Virtual: No. of fingers of each hand of Other Player
+short unsigned int *ActvhL, *ActvhR;                //Virtual: No. of fingers of each hand of Active Player
+short unsigned int *nActvhL, *nActvhR;              //Virtual: No. of fingers of each hand of Other Player
 char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
 short unsigned int Chance;                          //Chance goes to: values 1 & 2
 char CharChoice;                                    //Character type Choice to opt for different fn()s
@@ -51,16 +51,16 @@ int EndGame();                                      //Check ALL Game Over condit
 void main()
 {
   clrscr();
-	 cout<<"Butami v0.8.1 ALPHA Release";
+	 cout<<"Butami v0.9.0 BETA Release";
 	 cout<<"\n\nWelcome to MyButami: A game of intellect, logic and combination!\nThe version of MyButami you are running is in ALPHA Development mode and it may contain several bugs. Kindly co-operate by reporting these bugs to us!";
      cout<<"\n\nPress any key to start the game NOW or press Q to exit!";
      if(getche()=='Q')
         Quit();
-     else
+     else                                                                       //Display MainMenu
         Intro();
      cout<<"\n\n\t***Player names***\n\n";
  	 cout<<"\n\t\t(If you can't wait to Play, press Esc.: Default names will be selected)";
-	 if(getch()==27)
+	 if(getch()==27)                                                            //ASCII Code for ESC Key
 	 {
       cout<<"\nDefault names selected!\n";
 	  delay(1500);
@@ -72,21 +72,21 @@ void main()
 	  cin>>Pl1Name;
 	  cout<<"\nPlayer 2 : Please enter your name : ";
 	  cin>>Pl2Name;
-	  delay(1000);
-	  cout<<"\nThank you!\n";
+  	  cout<<"\nThank you!\n";
+      delay(1000);
 	 }
 start:
 	 cout<<"\nPress Q any time in the game-play to Quit";
      cout<<"\n\n\nLoading MyButami...";
      delay(750);
-     Chance=1;
-     ActvPlayer();
- 	 getch();
+     Chance=1;                                                                  //Initiating Change to Player1
+     ActvPlayer();                                                              //Initiating Game-Play
+ 	 getch();                                                                   //Prevent Auto-Close in Shell Environment
 }
 
 //******************************************************* End Of main() Function
 
-//***************************Function: Intro()   <----
+//**********************************************************Function: Intro()   <----
 void Intro()
 {
  clrscr();
@@ -99,12 +99,12 @@ void Intro()
               delay(2000);
               clrscr();
               IntroCase1:
-              cout<<"\n\nPlease take note that you are running an ALPHA Release of MyButami and are subject to its obligations. We cannot guaruntee compaitibility with your hardware, and this software may crash with non-standard configurations. We expect for better compaitibility in future versions. If you accept, please type Y or type Q to EXIT now...";
+              cout<<"\n\nPlease take note that you are running an BETA Release of MyButami and are subject to its obligations. We cannot guaruntee compaitibility with your hardware, and this software may crash with non-standard configurations. We expect for better compaitibility in future versions. If you accept, please type Y or type Q to EXIT now...";
               cin>>CharChoice;
               if(CharChoice=='Q')
                 Quit();
-              else if(CharChoice=='Y')
-                break;
+              else if(CharChoice=='Y')                                          //User must READ above notice for proper response!
+                return;
               else
                 goto IntroCase1;
               break;
@@ -128,7 +128,7 @@ void Intro()
               getch();
               Intro();
               break;
-     case '3':          //Credits Scrolling Pending!!!
+     case '3':getch();                                                          //Credits Scrolling Pending!!!
               break;
      case '4':Quit();
               break;
@@ -136,13 +136,14 @@ void Intro()
              delay(1500);
              Intro();
     }
+    Intro();                                                                    //Keep MainMenu after break;
 }
 
 
-//***************************Function: Process()   <----
+//******************************************************** Function: Process()  <----
 void Process()
 {
- for(EndGame();EndGame()==1;)
+ for(EndGame();EndGame()==1;)                                                   //Continue till EndGame Condition Reached
      {
         if((*ActvhL==0 && *ActvhR==4) || (*ActvhL==4 && *ActvhR==0))
               Splitting();
@@ -150,8 +151,8 @@ void Process()
               Splitting();
         if((*ActvhL==2 && *ActvhR==2) || (*ActvhL==4 && *ActvhR==4))
              Cancellation();
-        ChoiceMenu();
-        switch(SelOUT)
+        ChoiceMenu();                                                           //Only DISPLAY the menu
+        switch(SelOUT)                                                          //Toggle Input from ChoiceMenu()
                 {
                  case 'R':if(SelIN=='L')
 					           *nActvhR+=*ActvhL;
@@ -169,16 +170,16 @@ void Process()
                                *ActvhL+=*ActvhR;
                           break;
                 }
-        Barring();
-        ChangeChance();
+        Barring();                                                              //Check Hand Barring Condition
+        ChangeChance();                                                         //Initialize Next Round
      }
 }
 
-//***************************Function: ActvPlayer()    <----
+//****************************************************** Function: ActvPlayer() <----
 
 void ActvPlayer()
 {
- if(Chance==1)
+ if(Chance==1)                                                                  //Initialize Player1
     {
      strcpy(ActvPl, Pl1Name);
      ActvhL=&Pl1hL;
@@ -187,7 +188,7 @@ void ActvPlayer()
      nActvhR=&Pl2hR;
 
     }
- else
+ else                                                                           //Initialize Player2
     {
      strcpy(ActvPl, Pl2Name);
      ActvhL=&Pl2hL;
@@ -201,7 +202,7 @@ void ActvPlayer()
 
 }
 
-//***************************Function: Status()    <----
+//********************************************************** Function: Status() <----
 
 void Status()
 {
@@ -211,7 +212,7 @@ void Status()
  cout<<"\n\nChance of ---> "<<ActvPl;
 }
 
-//***************************Function: ChoiceMenu()   <----
+//****************************************************** Function: ChoiceMenu() <----
 
 void ChoiceMenu()
 {
@@ -229,19 +230,19 @@ void ChoiceMenu()
  else
     {
      cout<<"\n\nSelect which hand you wish to play with (L/R) :";
-     cin>>SelIN;
+     cin>>SelIN;                                                                //This input is toggled in Process()
      if(SelIN=='Q')
         Quit();
      else
         cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
      }
- cin>>SelOUT;
+ cin>>SelOUT;                                                                   //This input is toggled in Process()
  if(SelOUT=='Q')
     Quit();
 }
 
 
-//***************************Function: Cancellation()   <----
+//**************************************************** Function: Cancellation() <----
 
 void Cancellation()
 {
@@ -251,25 +252,15 @@ void Cancellation()
     {
      cout<<"Cancelling...";
      delay(500);
-     if(Pl1hR==2 && Pl1hL==2)
+     if(*ActvhR==2 && *ActvhL==2)
         {
-         Pl1hR=1;
-         Pl1hL=1;
+         *ActvhR=1;
+         *ActvhL=1;
         }
-     if(Pl1hR==4 && Pl1hL==4)
+     if(*ActvhR==4 && *ActvhL==4)
         {
-         Pl1hR=2;
-         Pl1hL=2;
-        }
-     if(Pl2hR==2 && Pl2hL==2)
-        {
-         Pl2hR=1;
-         Pl2hL=1;
-        }
-     if(Pl2hR==4 && Pl2hL==4)
-        {
-         Pl2hR=2;
-         Pl2hL=2;
+         *ActvhR=2;
+         *ActvhL=2;
         }
      cout<<"\nCancellation has been done!";
      ChangeChance();
@@ -282,10 +273,10 @@ void Cancellation()
      getch();
      Cancellation();
     }
- Process(); //Return to normal Game Play
+ Process();                                                                     //Return to normal Game Play
 }
 
-//***************************Function: ChangeChance()   <----
+//**************************************************** Function: ChangeChance() <----
 
 void ChangeChance()
 {
@@ -296,7 +287,7 @@ void ChangeChance()
  ActvPlayer();
 }
 
-//***************************Function: Barring()        <----
+//********************************************************* Function: Barring() <----
 
 void Barring()
 {
@@ -310,7 +301,7 @@ void Barring()
     *nActvhR=0;
 }
 
-//***************************Function: Splitting()      <----
+//******************************************************* Function: Splitting() <----
 
 void Splitting()
 {
@@ -320,25 +311,15 @@ void Splitting()
     {
      cout<<"Splitting...";
      delay(500);
-     if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0))
+     if((*ActvhR==0 && *ActvhL==4) || (*ActvhR==4 && *ActvhL==0))
         {
-         Pl1hR=2;
-         Pl1hL=2;
+         *ActvhR=2;
+         *ActvhL=2;
         }
-     if((Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
+     if((*ActvhR==0 && *ActvhL==2) || (*ActvhR==2 && *ActvhL==0))
         {
-         Pl1hR=1;
-         Pl1hL=1;
-        }
-     if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0))
-        {
-         Pl2hR=2;
-         Pl2hL=2;
-        }
-     if((Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
-        {
-         Pl2hR=1;
-         Pl2hL=1;
+         *ActvhR=1;
+         *ActvhL=1;
         }
      cout<<"\n\nSplitting of hands has been done!";
      ChangeChance();
@@ -351,9 +332,9 @@ void Splitting()
      getch();
      Splitting();
     }
- Process(); //Return to normal Game Play
+ Process();                                                                     //Return to normal Game Play
 }
-//***************************Function: Quit()        <----
+//************************************************************ Function: Quit() <----
 void Quit()
 {
  cout<<"\n\nYou chose to Quit the game. Are you sure? (Y/N): ";
@@ -367,8 +348,7 @@ void Quit()
     }
  else if(CharChoice=='N')
     {
-     Status();
-     ChoiceMenu();
+     return;
     }
  else
     {
@@ -378,7 +358,7 @@ void Quit()
     }
 }
 
-//***************************Function: EndGame()        <----
+//********************************************************* Function: EndGame() <----
 
 int EndGame()
 {
@@ -389,4 +369,4 @@ int EndGame()
  return 1;
 }
 
-/***************************    END OF PROGRAM */
+//****************************************************************************** END OF PROGRAM
