@@ -3,14 +3,11 @@
                AUTHORS - Omkar Ekbote & Swaroop Bhonde
            DESCRIPTION - Simple Butami Game
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.7.5 ALPHA Release
-             DATE/TIME - 05/02/07 21:17
-VERSION SPECIFICATIONS - Added Main Menu (Improved UI)
-                         Improved pre-procedure
-                         Added ActvPlayer() (ara AP)
-                         * ActvPl for name of AP
-                         * ActvhR and ActvhL for hands of AP
-                         * Cancellation() and \Splitting()\
+               VERSION - v0.8.0 ALPHA Release
+             DATE/TIME - 06/02/07 18:52
+VERSION SPECIFICATIONS - Truncated Player1() and Player2() to Process()
+                         All known bugs regarding Cancellation() and Splitting() fixed
+                         Saved memory by converting variables to pointers
             KNOWN BUGS - Splitting() does not work!!!
                          Cancellation() condition is buggy!
                          Quit() does not return to Main Menu when prompted 'N'
@@ -25,17 +22,18 @@ VERSION SPECIFICATIONS - Added Main Menu (Improved UI)
 #include <string.h>
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
-short unsigned int ActvhL, ActvhR;                  //No. of fingers of each hand of Active Player
+short unsigned int *ActvhL, *ActvhR;                               //Virtual: No. of fingers of each hand of Active Player
+short unsigned int *nActvhL, *nActvhR;                             //Virtual: No. of fingers of each hand of Other Player
 char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
-short unsigned int chance;                          //Chance goes to: values 1 & 2
+short unsigned int Chance;                          //Chance goes to: values 1 & 2
 char CharChoice;                                    //Character type Choice to opt for different fn()s
 char Pl1Name[15]="Player 1";                        //Player1 Name
 char Pl2Name[15]="Player 2";                        //Player2 Name
 char ActvPl[15];                                    //Name of the active player
 //***************************End Of Global Variables
 void Intro();                                       //Main-menu of the Game for Intro and Help
-void process();                                     //Game Play till End Condition is reached
-void status();                                      //Defualt DISPLAY with clrscr()
+void Process();                                     //Game Play till End Condition is reached
+void Status();                                      //Defualt DISPLAY with clrscr()
 void Player1();                                     //Chance to Player1
 void Player2();                                     //Chance to Player2
 void ActvPlayer();                                  //Decides the active player's name and attributes
@@ -53,7 +51,7 @@ int EndGame();                                      //Check ALL Game Over condit
 void main()
 {
   clrscr();
-	 cout<<"Butami v0.7.4 ALPHA Release";
+	 cout<<"Butami v0.8.0 ALPHA Release";
 	 cout<<"\n\nWelcome to MyButami: A game of intellect, logic and combination!\nThe version of MyButami you are running is in ALPHA Development mode and it may contain several bugs. Kindly co-operate by reporting these bugs to us!";
      cout<<"\n\nPress any key to start the game NOW or press Q to exit!";
      if(getche()=='Q')
@@ -81,14 +79,12 @@ start:
 	 cout<<"\nPress Q any time in the game-play to Quit";
      cout<<"\n\n\nLoading MyButami...";
      delay(750);
-     //status();
-	 chance=1;
+     Chance=1;
      ActvPlayer();
-	 process();
-	 getch();
+ 	 getch();
 }
 
-//***************************End Of main() Function
+//******************************************************* End Of main() Function
 
 //***************************Function: Intro()   <----
 void Intro()
@@ -122,11 +118,11 @@ void Intro()
               cout<<"\nAs mentioned in the Credits, MyButami was originally conceptualized for manual play, and has later been adapted to a Computer Interface. The object of this game can be explain briefly as follows:";
               cout<<"Each Player had 2 hands of 5 fingers each, which is represented in the GUI as follows:";
               cout<<"\n\n<IMAGE>\n\n";
-              cout<<"Each player starts with 1 finger on each hand. When its your chance, you can give fingers of any hand (of yours) to any other hand (of yours or opponent's). When you do that, the no. of fingers that were present on the selected hand will get added to the next hand.";
+              cout<<"Each player starts with 1 finger on each hand. When its your Chance, you can give fingers of any hand (of yours) to any other hand (of yours or opponent's). When you do that, the no. of fingers that were present on the selected hand will get added to the next hand.";
               cout<<"\n\n--->Any of the hands get barred if it holds 5 or more fingers at any time! <---";
               cout<<"\n\n--->The OBJECT of the game is to bar both hands of your opponent before he does! <---";
-              cout<<"\n\n* Cancellation *\nIf you have even no. of fingers on BOTH your hands, then you may opt for cancellation which will reduce them by multiples of 2. Cancellation is optional, and it costs one chance to pass fingers. You will be prompted for Cancellation whenever applicable during Game-Play to which you may accept or deny.";
-              cout<<"*\n\n* Splitting *\nIn case you have only 1 hand left (the other has been barred), and it holds EVEN no. of fingers, then you may opt for splitting, which will revive your other hand, each having half the no. of fingers available. Splitting is optional, and it costs one chance to pass fingers. You will be prompted for Splitting whenever applicable during Game-Play to which you may accept or deny.";
+              cout<<"\n\n* Cancellation *\nIf you have even no. of fingers on BOTH your hands, then you may opt for cancellation which will reduce them by multiples of 2. Cancellation is optional, and it costs one Chance to pass fingers. You will be prompted for Cancellation whenever applicable during Game-Play to which you may accept or deny.";
+              cout<<"*\n\n* Splitting *\nIn case you have only 1 hand left (the other has been barred), and it holds EVEN no. of fingers, then you may opt for splitting, which will revive your other hand, each having half the no. of fingers available. Splitting is optional, and it costs one Chance to pass fingers. You will be prompted for Splitting whenever applicable during Game-Play to which you may accept or deny.";
               cout<<"\n\n\nWe hope you will enjoy playing MyButami - you may bring up this HELP screen anytime during Game-Play by pressing F1";
               cout<<"\n\n\nPress any key to continue to Main Menu...";
               getch();
@@ -143,12 +139,45 @@ void Intro()
 }
 
 
-//***************************Function: process()   <----
-void process()
+//***************************Function: Process()   <----
+void Process()
 {
  for(EndGame();EndGame()==1;)
      {
-        if(chance==1)
+        if((*ActvhL==0 && *ActvhR==4) || (*ActvhL==4 && *ActvhR==0))
+              Splitting();
+        else if((*ActvhL==2 && *ActvhR==0) || (*ActvhL==0 && *ActvhR==2))
+              Splitting();
+        if((*ActvhL==2 && *ActvhR==2) || (*ActvhL==4 && *ActvhR==4))
+             Cancellation();
+        ChoiceMenu();
+        switch(SelOUT)
+                {
+                 case 'R':if(SelIN=='L')
+						 *nActvhR+=*ActvhL;
+                               //Pl2hR+=Pl1hL;
+					 else
+                               *nActvhR+=*ActvhR;
+                               //Pl2hR+=Pl1hR;
+                          break;
+                 case 'L':if(SelIN=='L')
+                               *nActvhL+=*ActvhL;
+                               //Pl2hL+=Pl1hL;
+                          else
+                               *nActvhL+=*ActvhR;
+                               //Pl2hL+=Pl1hR;
+                          break;
+                 case 'O':if(SelIN=='L')
+                               *ActvhR+=*ActvhL;
+                               //Pl1hR+=Pl1hL;
+                          else
+                               *ActvhL+=*ActvhR;
+                               //Pl1hL+=Pl1hR;
+                          break;
+                }
+        Barring();
+        ChangeChance();
+        /*if(Chance==1)
            {
             Player1();
             Barring();
@@ -158,7 +187,7 @@ void process()
             Player2();
             Barring();
            }
-        status();
+        Status();*/
      }
 }
 
@@ -166,32 +195,37 @@ void process()
 
 void ActvPlayer()
 {
- if(chance==1)
+ if(Chance==1)
     {
      strcpy(ActvPl, Pl1Name);
-     ActvhL=Pl1hL;
-     ActvhR=Pl1hR;
+     ActvhL=&Pl1hL;
+     ActvhR=&Pl1hR;
+     nActvhL=&Pl2hL;
+     nActvhR=&Pl2hR;
 
     }
  else
     {
      strcpy(ActvPl, Pl2Name);
-     ActvhL=Pl2hL;
-     ActvhR=Pl2hR;
+     ActvhL=&Pl2hL;
+     ActvhR=&Pl2hR;
+     nActvhL=&Pl1hL;
+     nActvhR=&Pl1hR;
     }
 
- status();
- if((ActvhL==0 && ActvhR==4) || (ActvhL==4 && ActvhR==0) || (ActvhL==2 && ActvhR==0) || (ActvhL==0 && ActvhR==2))
+ Status();
+ Process();
+ /*if((*ActvhL==0 && *ActvhR==4) || (*ActvhL==4 && *ActvhR==0) || (*ActvhL==2 && *ActvhR==0) || (*ActvhL==0 && *ActvhR==2))
     Splitting();
- if((ActvhL=ActvhR==2) || (ActvhL=ActvhR==4))
-    Cancellation();
+ if((*ActvhL==*ActvhR==2) || (*ActvhL==*ActvhR==4))
+    Cancellation(); */
 
 
 }
 
-//***************************Function: status()    <----
+//***************************Function: Status()    <----
 
-void status()
+void Status()
 {
  clrscr();
  cout<<"    "<<Pl1Name<<"\nLEFT\tRIGHT\n"<<Pl1hL<<"\t"<<Pl1hR;
@@ -201,44 +235,50 @@ void status()
 
 //***************************Function: Player1()   <----
 
-void Player1()
+/*void Player1()
 {
- //cout<<"\n\nChance of ---> "<<Pl1Name<<Pl1;
- /*if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
+ cout<<"\n\nChance of ---> "<<Pl1Name<<Pl1;
+ if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
      Cancellation();
  if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0) || (Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
-    Splitting(); */
+    Splitting();
  ChoiceMenu();
  switch(SelOUT)
     {
       case 'R':if(SelIN=='L')
-                Pl2hR+=Pl1hL;
+                nActvhR+=ActvhL
+                //Pl2hR+=Pl1hL;
               else
-                Pl2hR+=Pl1hR;
+                nActvhR+=ActvhR;
+                //Pl2hR+=Pl1hR;
               break;
      case 'L':if(SelIN=='L')
-                Pl2hL+=Pl1hL;
+                nActvhL+=ActvhL;
+                //Pl2hL+=Pl1hL;
               else
-                Pl2hL+=Pl1hR;
+                nActvhL+=ActvhR;
+                //Pl2hL+=Pl1hR;
               break;
      case 'O':if(SelIN=='L')
-                Pl1hR+=Pl1hL;
+                ActvhR+=ActvhL;
+                //Pl1hR+=Pl1hL;
               else
-                Pl1hL+=Pl1hR;
+                ActvhL+=ActvhR;
+                //Pl1hL+=Pl1hR;
               break;
     }
  ChangeChance();
-}
+} */
 
 //***************************Function: Player2()   <----
 
-void Player2()
+/*void Player2()
 {
  //cout<<"\n\nChance of ---> "<<Pl2Name<<Pl2;
- /*if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
+ if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
     Cancellation();
  if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0) || (Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
-    Splitting(); */
+    Splitting();
  ChoiceMenu();
  switch(SelOUT)
     {
@@ -260,18 +300,18 @@ void Player2()
     }
  ChangeChance();
 }
-
+*/
 //***************************Function: ChoiceMenu()   <----
 
 void ChoiceMenu()
 {
  cout<<"\n\nCHOICE MENU Function!";
- if(((chance==1) && (Pl1hL==0)) || ((chance==2) && (Pl2hL==0)))
+ if(*ActvhL==0)
     {
      cout<<"\n\nYour RIGHT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
     }
- else if(((chance==1) && (Pl1hR==0)) || ((chance==2) && (Pl2hR==0)))
+ else if(*ActvhR==0)
     {
      cout<<"Your LEFT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
@@ -334,36 +374,36 @@ void Cancellation()
      getch();
      Cancellation();
     }
- process(); //Return to normal Game Play
+ Process(); //Return to normal Game Play
 }
 
 //***************************Function: ChangeChance()   <----
 
 void ChangeChance()
 {
- if(chance==1)
-    chance=2;
+ if(Chance==1)
+    Chance=2;
  else
-    chance=1;
+    Chance=1;
  ActvPlayer();
- //status();
+ //Status();
 }
 
 //***************************Function: Barring()        <----
 
 void Barring()
 {
- if(Pl1hL>=5)
-    Pl1hL=0;
- if(Pl1hR>=5)
-    Pl1hR=0;
- if(Pl2hL>=5)
-    Pl2hL=0;
- if(Pl2hR>=5)
-    Pl2hR=0;
+ if(*ActvhL>=5)
+    *ActvhL=0;
+ if(*ActvhR>=5)
+    *ActvhR=0;
+ if(*nActvhL>=5)
+    *nActvhL=0;
+ if(*nActvhR>=5)
+    *nActvhR=0;
 }
 
-//***************************Function: Splitting()      <---- ADDED NEWLY
+//***************************Function: Splitting()      <----
 
 void Splitting()
 {
@@ -404,7 +444,7 @@ void Splitting()
      getch();
      Splitting();
     }
- process(); //Return to normal Game Play
+ Process(); //Return to normal Game Play
 }
 //***************************Function: Quit()        <----
 void Quit()
@@ -420,7 +460,7 @@ void Quit()
     }
  else if(CharChoice=='N')
     {
-     status();
+     Status();
      ChoiceMenu();
     }
  else
