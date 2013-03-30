@@ -1,6 +1,7 @@
-/*Butami v0.1.0 ALPHA Release (18/JAN/2007)*/
+/*Butami v0.2 ALPHA Release (18/JAN/2007)*/
 #include <iostream.h>
 #include <conio.h>
+#include <process.h>
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
 char SelIN,SelOUT; //Sectect Input hand (L/R) & Output hand (a/b/c)
@@ -9,19 +10,28 @@ void status(); //Defualt DISPLAY with clrscr()
 void Player1(); //Chance to Player1
 void Player2(); //Chance to Player2
 void ChoiceMenu();  //Menu for selection of Input/Output without clrscr()
-void EndGame(); //Check ALL Game Over conditions and Exit
-
+int EndGame(); //Check ALL Game Over conditions and Exit
+void Cancellation(); //Cancellation of hand having >=5 Fingers
 void main()
 {
      clrscr();
-     cout<<"Butami v0.1.0 ALPHA Release";
+     cout<<"Butami v0.2 ALPHA Release";
      status();
      chance=1;
-     if(chance==1)
-        Player1();
-     else
-        Player2();
-     status();
+     for(EndGame();EndGame()==1;)
+     {
+        if(chance==1)
+           {
+            Player1();
+            Cancellation();
+           }
+         else
+           {
+            Player2();
+            Cancellation();
+           }
+        status();
+     }
      getch();
 
 }
@@ -39,17 +49,17 @@ void Player1()
  ChoiceMenu();
  switch(SelOUT)
     {
-     case 'b':if(SelIN=='L')
+     case 'R':if(SelIN=='L')
                 Pl2hR+=Pl1hL;
               else
                 Pl2hR+=Pl1hR;
               break;
-     case 'c':if(SelIN=='L')
+     case 'L':if(SelIN=='L')
                 Pl2hL+=Pl1hL;
               else
                 Pl2hL+=Pl1hR;
               break;
-     case 'a':if(SelIN=='L')
+     case 'O':if(SelIN=='L')
                 Pl1hR+=Pl1hL;
               else
                 Pl1hL+=Pl1hR;
@@ -64,17 +74,17 @@ void Player2()
  ChoiceMenu();
  switch(SelOUT)
     {
-     case 'b':if(SelIN=='L')
+     case 'R':if(SelIN=='L')
                 Pl1hR+=Pl2hL;
               else
                 Pl1hR+=Pl2hR;
               break;
-     case 'c':if(SelIN=='L')
+     case 'L':if(SelIN=='L')
                 Pl1hL+=Pl2hL;
               else
                 Pl1hL+=Pl2hR;
               break;
-     case 'a':if(SelIN=='L')
+     case 'O':if(SelIN=='L')
                 Pl2hR+=Pl2hL;
               else
                 Pl2hL+=Pl2hR;
@@ -88,6 +98,28 @@ void ChoiceMenu()
  cout<<"\n\nCHOICE MENU Function!";
  cout<<"\n\nSelect which hand you wish to play with (L/R) :";
  cin>>SelIN;
- cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand\nb.Other's RIGHT hand\nc.Other's LEFT hand\n";
+ cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
  cin>>SelOUT;
 }
+
+int EndGame()
+{
+ if(Pl1hL==0 && Pl1hR==0)
+    exit(0);
+ if(Pl2hL==0 && Pl2hR==0)
+    exit(0);
+ return 1;
+}
+
+void Cancellation()
+{
+ if(Pl1hL>=5)
+    Pl1hL=0;
+ if(Pl1hR>=5)
+    Pl1hR=0;
+ if(Pl2hL>=5)
+    Pl2hL=0;
+ if(Pl2hR>=5)
+    Pl2hR=0;
+}
+
