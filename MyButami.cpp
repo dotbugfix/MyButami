@@ -5,11 +5,9 @@
         COMPAITIBILITY - Borland Turbo C++ IDE (Compilation)
                          DOS or similar Environment Shell
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.9.1 BETA
-             DATE/TIME - 16/02/07 13:39
-VERSION SPECIFICATIONS - Intro Graphics
-                         MainMenu as a new Function
-                         Fixed minor bugs w.r.t. MainMenu
+               VERSION - v0.9.2 BETA
+             DATE/TIME - 17/02/07 14:59
+VERSION SPECIFICATIONS - Bug fix : ChoiceMenu Invalid Choice
             KNOWN BUGS - Back-compaitible to v0.8.x League
                          Quit() needs attention!
                          Adapting MyButami™ Source© with GUI : IN PROGRESS
@@ -89,7 +87,7 @@ void Intro()
  settextstyle(2,0,6);
 	 outtextxy(520,55,"TM");                                                    //LogoUpperRight TM Sign
  settextstyle(2,0,6);
-	outtextxy(418,138,"v0.9.0 BETA");                                           //LogoBottomRight Version
+	outtextxy(418,138,"v0.9.2 BETA");                                           //LogoBottomRight Version
  settextstyle(4,0,9);
 	outtextxy(115,40,"MyButami");                                               //MyButami™ Logo (Gothic Font)
 							                     /*Begin PseudoLoading Dialog*/
@@ -178,7 +176,7 @@ void MainMenu()
               cout<<"\n\n--->Any of the hands get barred if it holds 5 or more fingers at any time! <---";
               cout<<"\n\n--->The OBJECT of the game is to bar both hands of your opponent before he does! <---";
               cout<<"\n\n* Cancellation *\nIf you have even no. of fingers on BOTH your hands, then you may opt for cancellation which will reduce them by multiples of 2. Cancellation is optional, and it costs one Chance to pass fingers. You will be prompted for Cancellation whenever applicable during Game-Play to which you may accept or deny.";
-              cout<<"*\n\n* Splitting *\nIn case you have only 1 hand left (the other has been barred), and it holds EVEN no. of fingers, then you may opt for splitting, which will revive your other hand, each having half the no. of fingers available. Splitting is optional, and it costs one Chance to pass fingers. You will be prompted for Splitting whenever applicable during Game-Play to which you may accept or deny.";
+              cout<<"\n\n* Splitting *\nIn case you have only 1 hand left (the other has been barred), and it holds EVEN no. of fingers, then you may opt for splitting, which will revive your other hand, each having half the no. of fingers available. Splitting is optional, and it costs one Chance to pass fingers. You will be prompted for Splitting whenever applicable during Game-Play to which you may accept or deny.";
               cout<<"\n\n\nWe hope you will enjoy playing MyButami - you may bring up this HELP screen anytime during Game-Play by pressing F1";
               cout<<"\n\n\nPress any key to continue to Main Menu...";
               getch();
@@ -207,6 +205,7 @@ void Process()
               Splitting();
         if((*ActvhL==2 && *ActvhR==2) || (*ActvhL==4 && *ActvhR==4))
              Cancellation();
+  errorcorrect:
         ChoiceMenu();                                                           //Only DISPLAY the menu
         switch(SelOUT)                                                          //Toggle Input from ChoiceMenu()
                 {
@@ -225,6 +224,11 @@ void Process()
                           else
                                *ActvhL+=*ActvhR;
                           break;
+                 default:cout<<"\n\nInvalid option! please try again...";
+                         delay(950);
+                         clrscr();
+                         Status();
+                         goto errorcorrect;
                 }
         Barring();                                                              //Check Hand Barring Condition
         ChangeChance();                                                         //Initialize Next Round
@@ -286,15 +290,32 @@ void ChoiceMenu()
  else
     {
      cout<<"\n\nSelect which hand you wish to play with (L/R) :";
-     cin>>SelIN;                                                                //This input is toggled in Process()
+     SelIN=getche();                                                            //This input is toggled in Process()
      if(SelIN=='Q')
         Quit();
+
+     else if(SelIN!='R' && SelIN!='L' && SelIN!='Q')
+        {
+         cout<<"\n\nInvalid option! please try again...";
+         delay(1050);
+         clrscr();
+         Status();
+         ChoiceMenu();
+        }
      else
         cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
      }
- cin>>SelOUT;                                                                   //This input is toggled in Process()
+ SelOUT=getche();                                                               //This input is toggled in Process()
  if(SelOUT=='Q')
     Quit();
+ else if(SelOUT!='R' && SelOUT!='L' && SelOUT!='O' && SelOUT!='Q')
+        {
+         cout<<"\n\nInvalid option! please try again...";
+         delay(1050);
+         clrscr();
+         Status();
+         ChoiceMenu();
+        }
 }
 
 
@@ -303,7 +324,7 @@ void ChoiceMenu()
 void Cancellation()
 {
  cout<<"\n\nDo you want to opt for Cancellation? (Y/N) :";
- cin>>CharChoice;
+ CharChoice=getche();
  if(CharChoice=='Y')
     {
      cout<<"Cancelling...";
@@ -362,7 +383,7 @@ void Barring()
 void Splitting()
 {
  cout<<"\n\nDo you want to opt for Splitting? (Y/N) :";
- cin>>CharChoice;
+ CharChoice=getche();
  if(CharChoice=='Y')
     {
      cout<<"Splitting...";
@@ -394,7 +415,7 @@ void Splitting()
 void Quit()
 {
  cout<<"\n\nYou chose to Quit the game. Are you sure? (Y/N): ";
- cin>>CharChoice;
+ CharChoice=getche();
  if(CharChoice=='Y')
     {
      cout<<"\n\nThank you for playing MyButami!";
@@ -408,8 +429,8 @@ void Quit()
     }
  else
     {
-     cout<<"Invalid choice! Try again!";
-     getch();
+     cout<<"Invalid choice! Try again! quit walla";
+     delay(950);
      Quit();
     }
 }
