@@ -5,17 +5,16 @@
         COMPAITIBILITY - Borland Turbo C++ IDE (Compilation)
                          DOS or similar Environment Shell
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.9.0 BETA
-             DATE/TIME - 15/02/07 22:38
-VERSION SPECIFICATIONS - Initiating v0.9.x BETA League with General Improvements
-                         Fixed Bug in Cancellation()
-                         Compaitaibility of Splitting() with ActvPlayer
-                         Global Commenting for existing Source©
-                         Indentation Corrections
+               VERSION - v0.9.1 BETA
+             DATE/TIME - 16/02/07 13:39
+VERSION SPECIFICATIONS - Intro Graphics
+                         MainMenu as a new Function
+                         Fixed minor bugs w.r.t. MainMenu
             KNOWN BUGS - Back-compaitible to v0.8.x League
                          Quit() needs attention!
-                         EndGame() not integrated with GUI
+                         Adapting MyButami™ Source© with GUI : IN PROGRESS
         NEXT BIG THING - v0.9.x BETA improves Basic GUI, implementing Graphics Drivers
+                         Adapt MainMenu to MyButami™ GUI
 
 */
 
@@ -30,8 +29,9 @@ char CharChoice;                                    //Character type Choice to o
 char Pl1Name[15]="Player 1";                        //Player1 Name
 char Pl2Name[15]="Player 2";                        //Player2 Name
 char ActvPl[15];                                    //Name of the active player
-//***************************End Of Global Variables
-void Intro();                                       //Main-menu of the Game for Intro and Help
+//******************************************************************************End Of Global Variables
+void Intro();                                       //Intro Display - Logo & Progress
+void MainMenu();                                    //Main-Menu of the game with global options/settings
 void Process();                                     //Game Play till End Condition is reached
 void Status();                                      //Defualt DISPLAY with clrscr()
 void Player1();                                     //Chance to Player1
@@ -44,29 +44,24 @@ void Cancellation();                                //Cancellation of even no. o
 void Splitting();                                   //Splitting of one hand into two for even no. of fingers
 void Quit();                                        //Quit of the game-play by User
 int EndGame();                                      //Check ALL Game Over conditions and Exit
-//***************************End Of Function Prototypes
+//******************************************************************************End Of Function Prototypes
 
-//***************************End of Preprocessor Directives
+//******************************************************************************End of Preprocessor Directives
 
 void main()
 {
   clrscr();
-	 cout<<"Butami v0.9.0 BETA Release";
-	 cout<<"\n\nWelcome to MyButami: A game of intellect, logic and combination!\nThe version of MyButami you are running is in ALPHA Development mode and it may contain several bugs. Kindly co-operate by reporting these bugs to us!";
-     cout<<"\n\nPress any key to start the game NOW or press Q to exit!";
-     if(getche()=='Q')
-        Quit();
-     else                                                                       //Display MainMenu
-        Intro();
-     cout<<"\n\n\t***Player names***\n\n";
- 	 cout<<"\n\t\t(If you can't wait to Play, press Esc.: Default names will be selected)";
-	 if(getch()==27)                                                            //ASCII Code for ESC Key
+  Intro();
+  MainMenu();
+  cout<<"\n\n\t***Player names***\n\n";
+  cout<<"\n\t\t(If you can't wait to Play, press Esc.: Default names will be selected)";
+  if(getch()==27)                                                               //ASCII Code for ESC Key
 	 {
       cout<<"\nDefault names selected!\n";
 	  delay(1500);
 	  goto start;
 	 }
-	 else
+ else
      {
 	  cout<<"\n\nPlayer 1 : Please enter your name : ";
 	  cin>>Pl1Name;
@@ -75,7 +70,7 @@ void main()
   	  cout<<"\nThank you!\n";
       delay(1000);
 	 }
-start:
+ start:
 	 cout<<"\nPress Q any time in the game-play to Quit";
      cout<<"\n\n\nLoading MyButami...";
      delay(750);
@@ -86,11 +81,72 @@ start:
 
 //******************************************************* End Of main() Function
 
-//**********************************************************Function: Intro()   <----
+//*********************************************************** Function: Intro() <----
 void Intro()
 {
+ int gdriver = DETECT, gmode;
+	 initgraph(&gdriver,&gmode,"");
+ settextstyle(2,0,6);
+	 outtextxy(520,55,"TM");                                                    //LogoUpperRight TM Sign
+ settextstyle(2,0,6);
+	outtextxy(418,138,"v0.9.0 BETA");                                           //LogoBottomRight Version
+ settextstyle(4,0,9);
+	outtextxy(115,40,"MyButami");                                               //MyButami™ Logo (Gothic Font)
+							                     /*Begin PseudoLoading Dialog*/
+ setviewport(115,200,520,220,0);
+ settextjustify(CENTER_TEXT,CENTER_TEXT);
+ settextstyle(2,0,6);
+	outtextxy(205,10,"Checking System Compaitibility...");
+	delay(1250);
+	clearviewport();
+	outtextxy(205,10,"LOADING... Graphics Drivers");
+	delay(1150);
+ setviewport(0,0,getmaxx(),getmaxy(),1);                                        //Display REAL Graphics Info
+ rectangle(210,260,425,380);
+ rectangle(213,263,422,377);
+ setviewport(213,263,422,377,0);
+ settextjustify(LEFT_TEXT,LEFT_TEXT);
+	outtextxy(5,20,"Your Graphics Config:");
+	line(5,27,195,27);
+	outtextxy(5,50,"Init : ");
+	outtextxy(64,50,grapherrormsg(graphresult()));
+	outtextxy(5,75,"Driver : ");
+	outtextxy(86,75,getdrivername());
+	outtextxy(5,100,"Mode : ");
+	outtextxy(67,100,getmodename(getgraphmode()));
+ setviewport(115,200,520,220,0);
+ settextjustify(CENTER_TEXT,CENTER_TEXT);                                       //Continue PseudoLoading
+ settextstyle(2,0,6);
+	delay(950);
+	clearviewport();
+	outtextxy(205,10,"LOADING... Core Components");
+	delay(1700);
+	clearviewport();
+	outtextxy(205,10,"LOADING... DLLs");
+	delay(600);
+	clearviewport();
+	outtextxy(205,10,"LOADING... Documentation");
+	delay(750);
+	clearviewport();
+	outtextxy(205,10,"LOADING... User Interface");
+	delay(1250);
+	clearviewport();
+	outtextxy(205,10,"Starting MyButami, Please Wait...");
+ setviewport(0,420,getmaxx(),getmaxy(),0);                                      //Display Progress Bar at bottom
+ short unsigned int coX;
+ for(coX=7;coX<=getmaxx();coX+=20)
+	{
+	 outtextxy(coX,10,"Û");
+	 delay(100);
+	}
+ closegraph();                                                                  //Close Graphics Driver
+}
+
+//******************************************************** Function: MainMenu() <----
+void MainMenu()
+{
  clrscr();
- cout<<"\t\t\t\t\t*** MAIN MENU ***";
+ cout<<"\t\t\t\t*** MAIN MENU ***";
  cout<<"\n\n1.START Game\n2.Instructions\n3.Credits\n4.Quit\n\nPlease select your choice: ";
  cin>>CharChoice;
  switch(CharChoice)
@@ -126,7 +182,7 @@ void Intro()
               cout<<"\n\n\nWe hope you will enjoy playing MyButami - you may bring up this HELP screen anytime during Game-Play by pressing F1";
               cout<<"\n\n\nPress any key to continue to Main Menu...";
               getch();
-              Intro();
+              MainMenu();
               break;
      case '3':getch();                                                          //Credits Scrolling Pending!!!
               break;
@@ -134,9 +190,9 @@ void Intro()
               break;
      default:cout<<"\n\nInvalid option! Try Again...";
              delay(1500);
-             Intro();
+             MainMenu();
     }
-    Intro();                                                                    //Keep MainMenu after break;
+    MainMenu();                                                                 //Keep MainMenu after break;
 }
 
 
@@ -341,7 +397,7 @@ void Quit()
  cin>>CharChoice;
  if(CharChoice=='Y')
     {
-     cout<<"\n\nThank you for playing Butami!";
+     cout<<"\n\nThank you for playing MyButami!";
      cout<<"\nQuiting...";
      delay(2000);
      exit(0);
