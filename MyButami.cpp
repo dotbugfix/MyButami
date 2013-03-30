@@ -1,17 +1,20 @@
 /*
-                  NAME - Butami
+                  NAME - MyButami™
                AUTHORS - Omkar Ekbote & Swaroop Bhonde
            DESCRIPTION - Simple Butami Game
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.7.4 ALPHA Release
-             DATE/TIME - 02-02-07 20:30
-VERSION SPECIFICATIONS - Improved pre-procedure
+               VERSION - v0.7.5 ALPHA Release
+             DATE/TIME - 05/02/07 21:17
+VERSION SPECIFICATIONS - Added Main Menu (Improved UI)
+                         Improved pre-procedure
                          Added ActvPlayer() (ara AP)
                          * ActvPl for name of AP
                          * ActvhR and ActvhL for hands of AP
                          * Cancellation() and \Splitting()\
             KNOWN BUGS - Splitting() does not work!!!
-        NEXT BIG THING -
+                         Cancellation() condition is buggy!
+                         Quit() does not return to Main Menu when prompted 'N'
+        NEXT BIG THING - Truncate Player1() & Player2() to ActvPlayer();
 
 */
 
@@ -30,6 +33,7 @@ char Pl1Name[15]="Player 1";                        //Player1 Name
 char Pl2Name[15]="Player 2";                        //Player2 Name
 char ActvPl[15];                                    //Name of the active player
 //***************************End Of Global Variables
+void Intro();                                       //Main-menu of the Game for Intro and Help
 void process();                                     //Game Play till End Condition is reached
 void status();                                      //Defualt DISPLAY with clrscr()
 void Player1();                                     //Chance to Player1
@@ -48,15 +52,18 @@ int EndGame();                                      //Check ALL Game Over condit
 
 void main()
 {
-	 clrscr();
-	 cout<<"Butami v0.7.3 ALPHA Release";
-	 //cout<<"\n\n<ESSAY>";
-	 cout<<"\n\n\t***Player names***\n\n";
-	 delay(500);
-	 cout<<"\n\tPress any key to proceed.";
-	 cout<<"\n\t(To ignore this, press Esc. Default names will be selected)";
+  clrscr();
+	 cout<<"Butami v0.7.4 ALPHA Release";
+	 cout<<"\n\nWelcome to MyButami: A game of intellect, logic and combination!\nThe version of MyButami you are running is in ALPHA Development mode and it may contain several bugs. Kindly co-operate by reporting these bugs to us!";
+     cout<<"\n\nPress any key to start the game NOW or press Q to exit!";
+     if(getche()=='Q')
+        Quit();
+     else
+        Intro();
+     cout<<"\n\n\t***Player names***\n\n";
+ 	 cout<<"\n\t\t(If you can't wait to Play, press Esc.: Default names will be selected)";
 	 if(getch()==27)
-     {
+	 {
       cout<<"\nDefault names selected!\n";
 	  delay(1500);
 	  goto start;
@@ -72,7 +79,7 @@ void main()
 	 }
 start:
 	 cout<<"\nPress Q any time in the game-play to Quit";
-     cout<<"\nThe game begins...";
+     cout<<"\n\n\nLoading MyButami...";
      delay(750);
      //status();
 	 chance=1;
@@ -82,6 +89,59 @@ start:
 }
 
 //***************************End Of main() Function
+
+//***************************Function: Intro()   <----
+void Intro()
+{
+ clrscr();
+ cout<<"\t\t\t\t\t*** MAIN MENU ***";
+ cout<<"\n\n1.START Game\n2.Instructions\n3.Credits\n4.Quit\n\nPlease select your choice: ";
+ cin>>CharChoice;
+ switch(CharChoice)
+    {
+     case '1':cout<<"\n\n\nYou may press 'Q' at anytime during gameplay to quit!\n\nStarting game, please wait...";
+              delay(2000);
+              clrscr();
+              IntroCase1:
+              cout<<"\n\nPlease take note that you are running an ALPHA Release of MyButami and are subject to its obligations. We cannot guaruntee compaitibility with your hardware, and this software may crash with non-standard configurations. We expect for better compaitibility in future versions. If you accept, please type Y or type Q to EXIT now...";
+              cin>>CharChoice;
+              if(CharChoice=='Q')
+                Quit();
+              else if(CharChoice=='Y')
+                break;
+              else
+                goto IntroCase1;
+              break;
+     case '2':cout<<"\n\nLoading Instructions...";
+              delay(1500);
+              clrscr();
+              cout<<"\n\t\t\t\t*** INSTRUCTIONS ***";
+              cout<<"\n\nMyButami is designed to be user-friendly in all possible manners. The default input being your Keyboard, all possible inputs are displayed in the User Interface at any time.\nThe Graphical User Interface (GUI) is applicable for Player Status only, and all functions are displayed in the form of menus. You are expected to enter the corresponding letter for your desired choice as per this menu.";
+              cout<<"There are no control keys for MyButami as such, and the game is driven my a Menu-based User Interface.";
+              cout<<"\n\n\n\t\t\t\t  *** OBJECTIVE ***";
+              cout<<"\nAs mentioned in the Credits, MyButami was originally conceptualized for manual play, and has later been adapted to a Computer Interface. The object of this game can be explain briefly as follows:";
+              cout<<"Each Player had 2 hands of 5 fingers each, which is represented in the GUI as follows:";
+              cout<<"\n\n<IMAGE>\n\n";
+              cout<<"Each player starts with 1 finger on each hand. When its your chance, you can give fingers of any hand (of yours) to any other hand (of yours or opponent's). When you do that, the no. of fingers that were present on the selected hand will get added to the next hand.";
+              cout<<"\n\n--->Any of the hands get barred if it holds 5 or more fingers at any time! <---";
+              cout<<"\n\n--->The OBJECT of the game is to bar both hands of your opponent before he does! <---";
+              cout<<"\n\n* Cancellation *\nIf you have even no. of fingers on BOTH your hands, then you may opt for cancellation which will reduce them by multiples of 2. Cancellation is optional, and it costs one chance to pass fingers. You will be prompted for Cancellation whenever applicable during Game-Play to which you may accept or deny.";
+              cout<<"*\n\n* Splitting *\nIn case you have only 1 hand left (the other has been barred), and it holds EVEN no. of fingers, then you may opt for splitting, which will revive your other hand, each having half the no. of fingers available. Splitting is optional, and it costs one chance to pass fingers. You will be prompted for Splitting whenever applicable during Game-Play to which you may accept or deny.";
+              cout<<"\n\n\nWe hope you will enjoy playing MyButami - you may bring up this HELP screen anytime during Game-Play by pressing F1";
+              cout<<"\n\n\nPress any key to continue to Main Menu...";
+              getch();
+              Intro();
+              break;
+     case '3':          //Credits Scrolling Pending!!!
+              break;
+     case '4':Quit();
+              break;
+     default:cout<<"\n\nInvalid option! Try Again...";
+             delay(1500);
+             Intro();
+    }
+}
+
 
 //***************************Function: process()   <----
 void process()
