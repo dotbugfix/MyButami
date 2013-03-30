@@ -1,23 +1,31 @@
-/*Butami v0.5 ALPHA Release (18/JAN/2007)*/
+/*Butami v0.6.2 ALPHA Release 28/01/07 12:00 Improving Choice Menu(), delay()*/
+/*                                           DEBUG:Invalid Choice in Cancellation() and Splitting()*/
+/*                                           Improving Player Name statement*/
+/*                                           Quit() */
 #include <iostream.h>
 #include <conio.h>
 #include <process.h>
+#include <dos.h>
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
 char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
 short unsigned int chance;                          //Chance goes to: values 1 & 2
-char ChoiceCan;                                     // Choice to opt for cancellation (See Below)
+char ChoiceCan;                                     //Choice to opt for cancellation (See Below)
+char ChoiceSpl;                                     //Choice to opt for Splitting of hand
+char ChoiceQuit;                                    //Choice to Quit the game-play
+char *Pl1Name="Player 1", *Pl2Name="Player 2";      //Player Names
 //***************************End Of Global Variables
-void process();                                     // Game Play till End Condition is reached
+void process();                                     //Game Play till End Condition is reached
 void status();                                      //Defualt DISPLAY with clrscr()
 void Player1();                                     //Chance to Player1
 void Player2();                                     //Chance to Player2
 void ChangeChance();                                //Inverts Chance for compatibility in main()
-void ChoiceMenuPl1();                               //Player1's Menu for selection of Input/Output without clrscr()
-void ChoiceMenuPl2();                               //Player2's Menu for selection of Input/Output without clrscr()
-int EndGame();                                      //Check ALL Game Over conditions and Exit
+void ChoiceMenu();                                  //The Menu for selection of Input/Output without clrscr()
 void Barring();                                     //Barring of hand having >=5 Fingers
 void Cancellation();                                //Cancellation of even no. of fingers to the least
+void Splitting();                                   //Splitting of one hand into two for even no. of fingers
+void Quit();                                        //Quit of the game-play by User
+int EndGame();                                      //Check ALL Game Over conditions and Exit
 //***************************End Of Function Prototypes
 
 //***************************End of Preprocessor Directives
@@ -25,7 +33,13 @@ void Cancellation();                                //Cancellation of even no. o
 void main()
 {
      clrscr();
-     cout<<"Butami v0.5 ALPHA Release";
+     cout<<"Butami v0.6.2 ALPHA Release";
+     //cout<<"\n\n<ESSAY>";
+     cout<<"\n\nPlayer 1 : Please enter your name : ";
+     cin>>Pl1Name;
+     cout<<"\nPlayer 2 : Please enter your name : ";
+     cin>>Pl2Name;
+     cout<<"\nPress Q any time in the game-play to Quit";
      status();
      chance=1;
      process();
@@ -58,18 +72,20 @@ void process()
 void status()
 {
  clrscr();
- cout<<"    Player 1\nLEFT\tRIGHT\n"<<Pl1hL<<"\t"<<Pl1hR;
- cout<<"\n\n"<<Pl2hL<<"\t"<<Pl2hR<<"\nLEFT\tRIGHT\n    Player2";
+ cout<<"    "<<Pl1Name<<"\nLEFT\tRIGHT\n"<<Pl1hL<<"\t"<<Pl1hR;
+ cout<<"\n\n"<<Pl2hL<<"\t"<<Pl2hR<<"\nLEFT\tRIGHT\n    "<<Pl2Name;
 }
 
 //***************************Function: Player1()   <----
 
 void Player1()
 {
- cout<<"\n\nChance of ---> PLAYER 1";
+ cout<<"\n\nChance of ---> "<<Pl1Name<<" (PLAYER 1)";
  if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
     Cancellation();
- ChoiceMenuPl1();
+ if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0) || (Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
+    Splitting();
+ ChoiceMenu();
  switch(SelOUT)
     {
       case 'R':if(SelIN=='L')
@@ -95,10 +111,12 @@ void Player1()
 
 void Player2()
 {
- cout<<"\n\nChance of ---> PLAYER 2";
+ cout<<"\n\nChance of ---> "<<Pl2Name<<" (PLAYER 2)";
  if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
     Cancellation();
- ChoiceMenuPl2();
+ if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0) || (Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
+    Splitting();
+ ChoiceMenu();
  switch(SelOUT)
     {
      case 'R':if(SelIN=='L')
@@ -120,17 +138,17 @@ void Player2()
  ChangeChance();
 }
 
-//***************************Function: ChoiceMenuPl1()   <----
+//***************************Function: ChoiceMenu()   <----
 
-void ChoiceMenuPl1()
+void ChoiceMenu()
 {
  cout<<"\n\nCHOICE MENU Function!";
- if(Pl1hL==0)
+ if(((chance==1) && (Pl1hL==0)) || ((chance==2) && (Pl2hL==0)))
     {
      cout<<"\n\nYour RIGHT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
     }
- else if(Pl1hR==0)
+ else if(((chance==1) && (Pl1hR==0)) || ((chance==2) && (Pl2hR==0)))
     {
      cout<<"Your LEFT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
@@ -139,34 +157,19 @@ void ChoiceMenuPl1()
     {
      cout<<"\n\nSelect which hand you wish to play with (L/R) :";
      cin>>SelIN;
-     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+     if(SelIN=='Q')
+        Quit();
+     else
+        return;
+        cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
     }
  cin>>SelOUT;
-}
-
-//***************************Function: ChoiceMenuPl2()   <----
-
-void ChoiceMenuPl2()
-{
- cout<<"\n\nCHOICE MENU Function!";
- if(Pl2hL==0)
-    {
-     cout<<"\n\nYour RIGHT hand is selected!";
-     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
-    }
- else if(Pl2hR==0)
-    {
-     cout<<"Your LEFT hand is selected!";
-     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
-    }
+ if(SelOUT=='Q')
+    Quit();
  else
-    {
-     cout<<"\n\nSelect which hand you wish to play with (L/R) :";
-     cin>>SelIN;
-     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
-    }
- cin>>SelOUT;
+    return;
 }
+
 
 //***************************Function: Cancellation()   <----
 
@@ -199,8 +202,14 @@ void Cancellation()
      cout<<"\nCancellation has been done!";
      ChangeChance();
     }
- else
+ else if(ChoiceCan=='N')
     return;
+ else
+    {
+     cout<<"Invalid choice! Try again!";
+     getch();
+     Cancellation();
+    }
  process(); //Return to normal Game Play
 }
 
@@ -227,6 +236,69 @@ void Barring()
     Pl2hL=0;
  if(Pl2hR>=5)
     Pl2hR=0;
+}
+
+//***************************Function: Splitting()      <---- ADDED NEWLY
+
+void Splitting()
+{
+ cout<<"\n\nDo you want to opt for Splitting? (Y/N) :";
+ cin>>ChoiceSpl;
+ if(ChoiceSpl=='Y')
+    {
+     if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0))
+        {
+         Pl1hR=2;
+         Pl1hL=2;
+        }
+     if((Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
+        {
+         Pl1hR=1;
+         Pl1hL=1;
+        }
+     if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0))
+        {
+         Pl2hR=2;
+         Pl2hL=2;
+        }
+     if((Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
+        {
+         Pl2hR=1;
+         Pl2hL=1;
+        }
+     cout<<"\n\nSplitting of hands has been done!";
+     ChangeChance();
+    }
+ else if(ChoiceSpl=='N')
+    return;
+ else
+    {
+     cout<<"Invalid choice! Try again!";
+     getch();
+     Splitting();
+    }
+ process(); //Return to normal Game Play
+}
+//***************************Function: Quit()        <----
+void Quit()
+{
+ cout<<"\n\nYou chose to Quit the game. Are you sure? (Y/N): ";
+ cin>>ChoiceQuit;
+ if(ChoiceQuit=='Y')
+    {
+     cout<<"\n\nThank you for playing Butami!";
+     cout<<"\nQuiting...";
+     delay(2000);
+     exit(0);
+    }
+ else if(ChoiceQuit=='N')
+    ChoiceMenu();
+ else
+    {
+     cout<<"Invalid choice! Try again!";
+     getch();
+     Quit();
+    }
 }
 
 //***************************Function: EndGame()        <----
