@@ -1,7 +1,6 @@
-/*Butami v0.6.2 ALPHA Release 28/01/07 12:00 Improving Choice Menu(), delay()*/
-/*                                           DEBUG:Invalid Choice in Cancellation() and Splitting()*/
-/*                                           Improving Player Name statement*/
-/*                                           Quit() */
+/*Butami v0.6.5 ALPHA Release 28-01-07 19:44 using delay()*/
+/*                                       *** Improving Player Name statement*/
+
 #include <iostream.h>
 #include <conio.h>
 #include <process.h>
@@ -14,6 +13,7 @@ char ChoiceCan;                                     //Choice to opt for cancella
 char ChoiceSpl;                                     //Choice to opt for Splitting of hand
 char ChoiceQuit;                                    //Choice to Quit the game-play
 char *Pl1Name="Player 1", *Pl2Name="Player 2";      //Player Names
+char *Pl1=" ", *Pl2=" ";                            //Player Names if not default
 //***************************End Of Global Variables
 void process();                                     //Game Play till End Condition is reached
 void status();                                      //Defualt DISPLAY with clrscr()
@@ -32,18 +32,37 @@ int EndGame();                                      //Check ALL Game Over condit
 
 void main()
 {
-     clrscr();
-     cout<<"Butami v0.6.2 ALPHA Release";
-     //cout<<"\n\n<ESSAY>";
-     cout<<"\n\nPlayer 1 : Please enter your name : ";
-     cin>>Pl1Name;
-     cout<<"\nPlayer 2 : Please enter your name : ";
-     cin>>Pl2Name;
-     cout<<"\nPress Q any time in the game-play to Quit";
+	 clrscr();
+	 cout<<"Butami v0.6.5 ALPHA Release";
+	 //cout<<"\n\n<ESSAY>";
+	 cout<<"\n\n\t***Player names***\n\n";
+	 delay(500);
+	 cout<<"\n\tPress any key to proceed.";
+	 cout<<"\n\t(To ignore this, press Esc. Default names will be selected)";
+	 if(getch()==27)
+	 {
+      cout<<"\nDefault names selected!\n";
+	  delay(1500);
+	  goto start;
+	 }
+	 else
+	 {
+      Pl1=" (Player 1)", Pl2=" (Player 2)";
+	  cout<<"\n\nPlayer 1 : Please enter your name : ";
+	  cin>>Pl1Name;
+	  cout<<"\nPlayer 2 : Please enter your name : ";
+	  cin>>Pl2Name;
+	  delay(1000);
+	  cout<<"\nThank you!\n";
+	 }
+start:
+	 cout<<"\nPress Q any time in the game-play to Quit";
+     cout<<"\nThe game begins...";
+     delay(750);
      status();
-     chance=1;
-     process();
-     getch();
+	 chance=1;
+	 process();
+	 getch();
 }
 
 //***************************End Of main() Function
@@ -80,7 +99,7 @@ void status()
 
 void Player1()
 {
- cout<<"\n\nChance of ---> "<<Pl1Name<<" (PLAYER 1)";
+ cout<<"\n\nChance of ---> "<<Pl1Name<<Pl1;
  if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
     Cancellation();
  if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0) || (Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
@@ -111,7 +130,7 @@ void Player1()
 
 void Player2()
 {
- cout<<"\n\nChance of ---> "<<Pl2Name<<" (PLAYER 2)";
+ cout<<"\n\nChance of ---> "<<Pl2Name<<Pl2;
  if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
     Cancellation();
  if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0) || (Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
@@ -179,6 +198,8 @@ void Cancellation()
  cin>>ChoiceCan;
  if(ChoiceCan=='Y')
     {
+     cout<<"Cancelling...";
+     delay(500);
      if(Pl1hR==2 && Pl1hL==2)
         {
          Pl1hR=1;
@@ -246,6 +267,8 @@ void Splitting()
  cin>>ChoiceSpl;
  if(ChoiceSpl=='Y')
     {
+     cout<<"Splitting...";
+     delay(500);
      if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0))
         {
          Pl1hR=2;
