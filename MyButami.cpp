@@ -5,9 +5,9 @@
         COMPAITIBILITY - Borland Turbo C++ IDE (Compilation)
                          DOS or similar Environment Shell
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.9.2 BETA
-             DATE/TIME - 17/02/07 14:59
-VERSION SPECIFICATIONS - Bug fix : ChoiceMenu Invalid Choice
+               VERSION - v0.9.3 BETA
+             DATE/TIME - 29/03/07 17:41
+VERSION SPECIFICATIONS - Improved Progress Bar
             KNOWN BUGS - Back-compaitible to v0.8.x League
                          Quit() needs attention!
                          Adapting MyButami™ Source© with GUI : IN PROGRESS
@@ -87,7 +87,7 @@ void Intro()
  settextstyle(2,0,6);
 	 outtextxy(520,55,"TM");                                                    //LogoUpperRight TM Sign
  settextstyle(2,0,6);
-	outtextxy(418,138,"v0.9.2 BETA");                                           //LogoBottomRight Version
+	outtextxy(418,138,"v0.9.3 BETA");                                           //LogoBottomRight Version
  settextstyle(4,0,9);
 	outtextxy(115,40,"MyButami");                                               //MyButami™ Logo (Gothic Font)
 							                     /*Begin PseudoLoading Dialog*/
@@ -131,12 +131,14 @@ void Intro()
 	clearviewport();
 	outtextxy(205,10,"Starting MyButami, Please Wait...");
  setviewport(0,420,getmaxx(),getmaxy(),0);                                      //Display Progress Bar at bottom
- short unsigned int coX;
- for(coX=7;coX<=getmaxx();coX+=20)
-	{
-	 outtextxy(coX,10,"Û");
-	 delay(100);
-	}
+ for(int Unit=20;Unit<=600;Unit+=8)
+		{
+		 randomize();
+		 int time=rand()%100;
+		 outtextxy(Unit,0,"Û");
+		 delay(time);
+		}
+ getch();
  closegraph();                                                                  //Close Graphics Driver
 }
 
