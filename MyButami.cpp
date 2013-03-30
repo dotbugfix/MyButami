@@ -1,5 +1,5 @@
-/*Butami v0.6.5 ALPHA Release 28-01-07 19:44 using delay()*/
-/*                                       *** Improving Player Name statement*/
+/*Butami v0.7.0 ALPHA Release 29/01/07 18:01 Using Universal Char Variable for
+                                             Quit(), Cancellation(), Splitting()*/
 
 #include <iostream.h>
 #include <conio.h>
@@ -9,9 +9,8 @@
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
 char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
 short unsigned int chance;                          //Chance goes to: values 1 & 2
-char ChoiceCan;                                     //Choice to opt for cancellation (See Below)
-char ChoiceSpl;                                     //Choice to opt for Splitting of hand
-char ChoiceQuit;                                    //Choice to Quit the game-play
+char CharChoice;                                    //Character Variable for Universal use with:
+                                                    //Quit(), Cancellation(), Splitting()
 char *Pl1Name="Player 1", *Pl2Name="Player 2";      //Player Names
 char *Pl1=" ", *Pl2=" ";                            //Player Names if not default
 //***************************End Of Global Variables
@@ -33,7 +32,7 @@ int EndGame();                                      //Check ALL Game Over condit
 void main()
 {
 	 clrscr();
-	 cout<<"Butami v0.6.5 ALPHA Release";
+	 cout<<"Butami v0.7.1 ALPHA Release";
 	 //cout<<"\n\n<ESSAY>";
 	 cout<<"\n\n\t***Player names***\n\n";
 	 delay(500);
@@ -195,8 +194,8 @@ void ChoiceMenu()
 void Cancellation()
 {
  cout<<"\n\nDo you want to opt for Cancellation? (Y/N) :";
- cin>>ChoiceCan;
- if(ChoiceCan=='Y')
+ cin>>CharChoice;
+ if(CharChoice=='Y')
     {
      cout<<"Cancelling...";
      delay(500);
@@ -223,8 +222,10 @@ void Cancellation()
      cout<<"\nCancellation has been done!";
      ChangeChance();
     }
- else if(ChoiceCan=='N')
+ else if(CharChoice=='N')
     return;
+ else if(CharChoice=='Q')
+    Quit();
  else
     {
      cout<<"Invalid choice! Try again!";
@@ -264,8 +265,8 @@ void Barring()
 void Splitting()
 {
  cout<<"\n\nDo you want to opt for Splitting? (Y/N) :";
- cin>>ChoiceSpl;
- if(ChoiceSpl=='Y')
+ cin>>CharChoice;
+ if(CharChoice=='Y')
     {
      cout<<"Splitting...";
      delay(500);
@@ -292,8 +293,10 @@ void Splitting()
      cout<<"\n\nSplitting of hands has been done!";
      ChangeChance();
     }
- else if(ChoiceSpl=='N')
+ else if(CharChoice=='N')
     return;
+ else if(CharChoice=='Q')
+    Quit();
  else
     {
      cout<<"Invalid choice! Try again!";
@@ -306,15 +309,15 @@ void Splitting()
 void Quit()
 {
  cout<<"\n\nYou chose to Quit the game. Are you sure? (Y/N): ";
- cin>>ChoiceQuit;
- if(ChoiceQuit=='Y')
+ cin>>CharChoice;
+ if(CharChoice=='Y')
     {
      cout<<"\n\nThank you for playing Butami!";
      cout<<"\nQuiting...";
      delay(2000);
      exit(0);
     }
- else if(ChoiceQuit=='N')
+ else if(CharChoice=='N')
     ChoiceMenu();
  else
     {
