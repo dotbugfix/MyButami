@@ -3,8 +3,8 @@
                AUTHORS - Omkar Ekbote & Swaroop Bhonde
            DESCRIPTION - Simple Butami Game
              COPYRIGHT - *Not decided by the Authors*
-               VERSION - v0.8.0 ALPHA Release
-             DATE/TIME - 06/02/07 18:52
+               VERSION - v0.8.1 ALPHA Release
+             DATE/TIME - 06/02/07 18:56
 VERSION SPECIFICATIONS - Truncated Player1() and Player2() to Process()
                          All known bugs regarding Cancellation() and Splitting() fixed
                          Saved memory by converting variables to pointers
@@ -51,7 +51,7 @@ int EndGame();                                      //Check ALL Game Over condit
 void main()
 {
   clrscr();
-	 cout<<"Butami v0.8.0 ALPHA Release";
+	 cout<<"Butami v0.8.1 ALPHA Release";
 	 cout<<"\n\nWelcome to MyButami: A game of intellect, logic and combination!\nThe version of MyButami you are running is in ALPHA Development mode and it may contain several bugs. Kindly co-operate by reporting these bugs to us!";
      cout<<"\n\nPress any key to start the game NOW or press Q to exit!";
      if(getche()=='Q')
@@ -154,40 +154,23 @@ void Process()
         switch(SelOUT)
                 {
                  case 'R':if(SelIN=='L')
-						 *nActvhR+=*ActvhL;
-                               //Pl2hR+=Pl1hL;
-					 else
+					           *nActvhR+=*ActvhL;
+                          else
                                *nActvhR+=*ActvhR;
-                               //Pl2hR+=Pl1hR;
                           break;
                  case 'L':if(SelIN=='L')
                                *nActvhL+=*ActvhL;
-                               //Pl2hL+=Pl1hL;
                           else
                                *nActvhL+=*ActvhR;
-                               //Pl2hL+=Pl1hR;
                           break;
                  case 'O':if(SelIN=='L')
                                *ActvhR+=*ActvhL;
-                               //Pl1hR+=Pl1hL;
                           else
                                *ActvhL+=*ActvhR;
-                               //Pl1hL+=Pl1hR;
                           break;
                 }
         Barring();
         ChangeChance();
-        /*if(Chance==1)
-           {
-            Player1();
-            Barring();
-           }
-         else
-           {
-            Player2();
-            Barring();
-           }
-        Status();*/
      }
 }
 
@@ -215,11 +198,6 @@ void ActvPlayer()
 
  Status();
  Process();
- /*if((*ActvhL==0 && *ActvhR==4) || (*ActvhL==4 && *ActvhR==0) || (*ActvhL==2 && *ActvhR==0) || (*ActvhL==0 && *ActvhR==2))
-    Splitting();
- if((*ActvhL==*ActvhR==2) || (*ActvhL==*ActvhR==4))
-    Cancellation(); */
-
 
 }
 
@@ -233,74 +211,6 @@ void Status()
  cout<<"\n\nChance of ---> "<<ActvPl;
 }
 
-//***************************Function: Player1()   <----
-
-/*void Player1()
-{
- cout<<"\n\nChance of ---> "<<Pl1Name<<Pl1;
- if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
-     Cancellation();
- if((Pl1hR==0 && Pl1hL==4) || (Pl1hR==4 && Pl1hL==0) || (Pl1hR==2 && Pl1hL==0) || (Pl1hR==0 && Pl1hL==2))
-    Splitting();
- ChoiceMenu();
- switch(SelOUT)
-    {
-      case 'R':if(SelIN=='L')
-                nActvhR+=ActvhL
-                //Pl2hR+=Pl1hL;
-              else
-                nActvhR+=ActvhR;
-                //Pl2hR+=Pl1hR;
-              break;
-     case 'L':if(SelIN=='L')
-                nActvhL+=ActvhL;
-                //Pl2hL+=Pl1hL;
-              else
-                nActvhL+=ActvhR;
-                //Pl2hL+=Pl1hR;
-              break;
-     case 'O':if(SelIN=='L')
-                ActvhR+=ActvhL;
-                //Pl1hR+=Pl1hL;
-              else
-                ActvhL+=ActvhR;
-                //Pl1hL+=Pl1hR;
-              break;
-    }
- ChangeChance();
-} */
-
-//***************************Function: Player2()   <----
-
-/*void Player2()
-{
- //cout<<"\n\nChance of ---> "<<Pl2Name<<Pl2;
- if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
-    Cancellation();
- if((Pl2hR==0 && Pl2hL==4) || (Pl2hR==4 && Pl2hL==0) || (Pl2hR==2 && Pl2hL==0) || (Pl2hR==0 && Pl2hL==2))
-    Splitting();
- ChoiceMenu();
- switch(SelOUT)
-    {
-     case 'R':if(SelIN=='L')
-                Pl1hR+=Pl2hL;
-              else
-                Pl1hR+=Pl2hR;
-              break;
-     case 'L':if(SelIN=='L')
-                Pl1hL+=Pl2hL;
-              else
-                Pl1hL+=Pl2hR;
-              break;
-     case 'O':if(SelIN=='L')
-                Pl2hR+=Pl2hL;
-              else
-                Pl2hL+=Pl2hR;
-              break;
-    }
- ChangeChance();
-}
-*/
 //***************************Function: ChoiceMenu()   <----
 
 void ChoiceMenu()
@@ -328,8 +238,6 @@ void ChoiceMenu()
  cin>>SelOUT;
  if(SelOUT=='Q')
     Quit();
- //else
-   // return;
 }
 
 
@@ -386,7 +294,6 @@ void ChangeChance()
  else
     Chance=1;
  ActvPlayer();
- //Status();
 }
 
 //***************************Function: Barring()        <----
