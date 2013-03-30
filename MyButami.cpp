@@ -1,4 +1,4 @@
-/*Butami v0.2 ALPHA Release (18/JAN/2007)*/
+/*Butami v0.3 ALPHA Release (18/JAN/2007)*/
 #include <iostream.h>
 #include <conio.h>
 #include <process.h>
@@ -9,13 +9,15 @@ short unsigned int chance; //Chance goes to: values 1 & 2
 void status(); //Defualt DISPLAY with clrscr()
 void Player1(); //Chance to Player1
 void Player2(); //Chance to Player2
-void ChoiceMenu();  //Menu for selection of Input/Output without clrscr()
+void ChoiceMenuPl1();  //Player1's Menu for selection of Input/Output without clrscr()
+void ChoiceMenuPl2();  //Player2's Menu for selection of Input/Output without clrscr()
 int EndGame(); //Check ALL Game Over conditions and Exit
-void Cancellation(); //Cancellation of hand having >=5 Fingers
+void Barring(); //Barring of hand having >=5 Fingers
+
 void main()
 {
      clrscr();
-     cout<<"Butami v0.2 ALPHA Release";
+     cout<<"Butami v0.3 ALPHA Release";
      status();
      chance=1;
      for(EndGame();EndGame()==1;)
@@ -23,12 +25,12 @@ void main()
         if(chance==1)
            {
             Player1();
-            Cancellation();
+            Barring();
            }
          else
            {
             Player2();
-            Cancellation();
+            Barring();
            }
         status();
      }
@@ -46,7 +48,7 @@ void status()
 void Player1()
 {
  cout<<"\n\nChance of ---> PLAYER 1";
- ChoiceMenu();
+ ChoiceMenuPl1();
  switch(SelOUT)
     {
      case 'R':if(SelIN=='L')
@@ -71,7 +73,7 @@ void Player1()
 void Player2()
 {
  cout<<"\n\nChance of ---> PLAYER 2";
- ChoiceMenu();
+ ChoiceMenuPl2();
  switch(SelOUT)
     {
      case 'R':if(SelIN=='L')
@@ -93,12 +95,47 @@ void Player2()
  chance=1;
 }
 
-void ChoiceMenu()
+void ChoiceMenuPl1()
 {
  cout<<"\n\nCHOICE MENU Function!";
- cout<<"\n\nSelect which hand you wish to play with (L/R) :";
- cin>>SelIN;
- cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+ if(Pl1hL==0)
+    {
+     cout<<"\n\nYour RIGHT hand is selected!";
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
+ else if(Pl1hR==0)
+    {
+     cout<<"Your LEFT hand is selected!";
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
+ else
+    {
+     cout<<"\n\nSelect which hand you wish to play with (L/R) :";
+     cin>>SelIN;
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
+ cin>>SelOUT;
+}
+
+void ChoiceMenuPl2()
+{
+ cout<<"\n\nCHOICE MENU Function!";
+ if(Pl2hL==0)
+    {
+     cout<<"\n\nYour RIGHT hand is selected!";
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
+ else if(Pl2hR==0)
+    {
+     cout<<"Your LEFT hand is selected!";
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
+ else
+    {
+     cout<<"\n\nSelect which hand you wish to play with (L/R) :";
+     cin>>SelIN;
+     cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+    }
  cin>>SelOUT;
 }
 
@@ -111,7 +148,7 @@ int EndGame()
  return 1;
 }
 
-void Cancellation()
+void Barring4()
 {
  if(Pl1hL>=5)
     Pl1hL=0;
