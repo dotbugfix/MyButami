@@ -1,4 +1,4 @@
-/*Butami v0.3 ALPHA Release (18/JAN/2007)*/
+/*Butami v0.4 ALPHA Release (18/JAN/2007)*/
 #include <iostream.h>
 #include <conio.h>
 #include <process.h>
@@ -6,21 +6,32 @@
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
 char SelIN,SelOUT; //Sectect Input hand (L/R) & Output hand (a/b/c)
 short unsigned int chance; //Chance goes to: values 1 & 2
+char ChoiceCan; // Choice to opt for cancellation (See Below)
+void process(); // Game Play till End Condition is reached
 void status(); //Defualt DISPLAY with clrscr()
 void Player1(); //Chance to Player1
 void Player2(); //Chance to Player2
+void ChangeChance(); //Inverts Chance for compatibility in main()
 void ChoiceMenuPl1();  //Player1's Menu for selection of Input/Output without clrscr()
 void ChoiceMenuPl2();  //Player2's Menu for selection of Input/Output without clrscr()
 int EndGame(); //Check ALL Game Over conditions and Exit
 void Barring(); //Barring of hand having >=5 Fingers
+void Cancellation(); //Cancellation of even no. of fingers to the least
 
 void main()
 {
      clrscr();
-     cout<<"Butami v0.3 ALPHA Release";
+     cout<<"Butami v0.4 ALPHA Release";
      status();
      chance=1;
-     for(EndGame();EndGame()==1;)
+     process();
+     getch();
+
+}
+
+void process()
+{
+ for(EndGame();EndGame()==1;)
      {
         if(chance==1)
            {
@@ -34,8 +45,6 @@ void main()
            }
         status();
      }
-     getch();
-
 }
 
 void status()
@@ -48,10 +57,12 @@ void status()
 void Player1()
 {
  cout<<"\n\nChance of ---> PLAYER 1";
+ if((Pl1hR==2 && Pl1hL==2) || (Pl1hR==4 && Pl1hL==4))
+    Cancellation();
  ChoiceMenuPl1();
  switch(SelOUT)
     {
-     case 'R':if(SelIN=='L')
+      case 'R':if(SelIN=='L')
                 Pl2hR+=Pl1hL;
               else
                 Pl2hR+=Pl1hR;
@@ -67,12 +78,14 @@ void Player1()
                 Pl1hL+=Pl1hR;
               break;
     }
- chance=2;
+ ChangeChance();
 }
 
 void Player2()
 {
  cout<<"\n\nChance of ---> PLAYER 2";
+ if((Pl2hR==2 && Pl2hL==2) || (Pl2hR==4 && Pl2hL==4))
+    Cancellation();
  ChoiceMenuPl2();
  switch(SelOUT)
     {
@@ -92,7 +105,7 @@ void Player2()
                 Pl2hL+=Pl2hR;
               break;
     }
- chance=1;
+ ChangeChance();
 }
 
 void ChoiceMenuPl1()
@@ -139,16 +152,50 @@ void ChoiceMenuPl2()
  cin>>SelOUT;
 }
 
-int EndGame()
+void Cancellation()
 {
- if(Pl1hL==0 && Pl1hR==0)
-    exit(0);
- if(Pl2hL==0 && Pl2hR==0)
-    exit(0);
- return 1;
+ cout<<"\n\nDo you want to opt for Cancellation? (Y/N) :";
+ cin>>ChoiceCan;
+ if(ChoiceCan=='Y')
+    {
+     if(Pl1hR==2 && Pl1hL==2)
+        {
+         Pl1hR=1;
+         Pl1hL=1;
+        }
+     if(Pl1hR==4 && Pl1hL==4)
+        {
+         Pl1hR=2;
+         Pl1hL=2;
+        }
+     if(Pl2hR==2 && Pl2hL==2)
+        {
+         Pl2hR=1;
+         Pl2hL=1;
+        }
+     if(Pl2hR==4 && Pl2hL==4)
+        {
+         Pl2hR=2;
+         Pl2hL=2;
+        }
+     cout<<"\nCancellation has been done!";
+     ChangeChance();
+    }
+ else
+    return;
+ process(); //Return to normal Game Play
 }
 
-void Barring4()
+void ChangeChance()
+{
+ if(chance==1)
+    chance=2;
+ else
+    chance=1;
+ status();
+}
+
+void Barring()
 {
  if(Pl1hL>=5)
     Pl1hL=0;
@@ -158,5 +205,14 @@ void Barring4()
     Pl2hL=0;
  if(Pl2hR>=5)
     Pl2hR=0;
+}
+
+int EndGame()
+{
+ if(Pl1hL==0 && Pl1hR==0)
+    exit(0);
+ if(Pl2hL==0 && Pl2hR==0)
+    exit(0);
+ return 1;
 }
 
