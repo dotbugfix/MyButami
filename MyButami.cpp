@@ -1,4 +1,4 @@
-/*Butami v0.7.0 ALPHA Release 29/01/07 18:01 Using Universal Char Variable for
+/*Butami v0.7.1 ALPHA Release 29/01/07 18:00 Using Universal Char Variable for
                                              Quit(), Cancellation(), Splitting()*/
 
 #include <iostream.h>
@@ -8,7 +8,7 @@
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
 char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
-short unsigned int chance;                          //Chance goes to: values 1 & 2
+short unsigned int Chance;                          //Chance goes to: values 1 & 2
 char CharChoice;                                    //Character Variable for Universal use with:
                                                     //Quit(), Cancellation(), Splitting()
 char *Pl1Name="Player 1", *Pl2Name="Player 2";      //Player Names
@@ -59,7 +59,7 @@ start:
      cout<<"\nThe game begins...";
      delay(750);
      status();
-	 chance=1;
+	 Chance=1;
 	 process();
 	 getch();
 }
@@ -71,7 +71,7 @@ void process()
 {
  for(EndGame();EndGame()==1;)
      {
-        if(chance==1)
+        if(Chance==1)
            {
             Player1();
             Barring();
@@ -161,12 +161,12 @@ void Player2()
 void ChoiceMenu()
 {
  cout<<"\n\nCHOICE MENU Function!";
- if(((chance==1) && (Pl1hL==0)) || ((chance==2) && (Pl2hL==0)))
+ if(((Chance==1) && (Pl1hL==0)) || ((Chance==2) && (Pl2hL==0)))
     {
      cout<<"\n\nYour RIGHT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
     }
- else if(((chance==1) && (Pl1hR==0)) || ((chance==2) && (Pl2hR==0)))
+ else if(((Chance==1) && (Pl1hR==0)) || ((Chance==2) && (Pl2hR==0)))
     {
      cout<<"Your LEFT hand is selected!";
      cout<<"\n\nSelect TO WHICH hand you wish to pass fingers :\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
@@ -178,8 +178,10 @@ void ChoiceMenu()
      if(SelIN=='Q')
         Quit();
      else
-        return;
-        cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+        {
+         //return;
+         cout<<"\nSelect TO WHICH hand you wish to pass fingers :\na.Your OTHER hand (O)\nb.Other's RIGHT hand (R)\nc.Other's LEFT hand (L)\n\nYour Choice:";
+        }
     }
  cin>>SelOUT;
  if(SelOUT=='Q')
@@ -187,7 +189,6 @@ void ChoiceMenu()
  else
     return;
 }
-
 
 //***************************Function: Cancellation()   <----
 
@@ -239,10 +240,10 @@ void Cancellation()
 
 void ChangeChance()
 {
- if(chance==1)
-    chance=2;
+ if(Chance==1)
+    Chance=2;
  else
-    chance=1;
+    Chance=1;
  status();
 }
 
@@ -318,7 +319,11 @@ void Quit()
      exit(0);
     }
  else if(CharChoice=='N')
-    ChoiceMenu();
+    {
+     clrscr();
+     status();
+     return;
+    }
  else
     {
      cout<<"Invalid choice! Try again!";
