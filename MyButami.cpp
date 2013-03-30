@@ -1,34 +1,40 @@
-/*Butami v0.4 ALPHA Release (18/JAN/2007)*/
+/*Butami v0.5 ALPHA Release (18/JAN/2007)*/
 #include <iostream.h>
 #include <conio.h>
 #include <process.h>
 
 short unsigned int Pl1hL=1,Pl1hR=1,Pl2hL=1,Pl2hR=1; //No. of fingers of each hand of each player
-char SelIN,SelOUT; //Sectect Input hand (L/R) & Output hand (a/b/c)
-short unsigned int chance; //Chance goes to: values 1 & 2
-char ChoiceCan; // Choice to opt for cancellation (See Below)
-void process(); // Game Play till End Condition is reached
-void status(); //Defualt DISPLAY with clrscr()
-void Player1(); //Chance to Player1
-void Player2(); //Chance to Player2
-void ChangeChance(); //Inverts Chance for compatibility in main()
-void ChoiceMenuPl1();  //Player1's Menu for selection of Input/Output without clrscr()
-void ChoiceMenuPl2();  //Player2's Menu for selection of Input/Output without clrscr()
-int EndGame(); //Check ALL Game Over conditions and Exit
-void Barring(); //Barring of hand having >=5 Fingers
-void Cancellation(); //Cancellation of even no. of fingers to the least
+char SelIN,SelOUT;                                  //Sectect Input hand (L/R) & Output hand (a/b/c)
+short unsigned int chance;                          //Chance goes to: values 1 & 2
+char ChoiceCan;                                     // Choice to opt for cancellation (See Below)
+//***************************End Of Global Variables
+void process();                                     // Game Play till End Condition is reached
+void status();                                      //Defualt DISPLAY with clrscr()
+void Player1();                                     //Chance to Player1
+void Player2();                                     //Chance to Player2
+void ChangeChance();                                //Inverts Chance for compatibility in main()
+void ChoiceMenuPl1();                               //Player1's Menu for selection of Input/Output without clrscr()
+void ChoiceMenuPl2();                               //Player2's Menu for selection of Input/Output without clrscr()
+int EndGame();                                      //Check ALL Game Over conditions and Exit
+void Barring();                                     //Barring of hand having >=5 Fingers
+void Cancellation();                                //Cancellation of even no. of fingers to the least
+//***************************End Of Function Prototypes
+
+//***************************End of Preprocessor Directives
 
 void main()
 {
      clrscr();
-     cout<<"Butami v0.4 ALPHA Release";
+     cout<<"Butami v0.5 ALPHA Release";
      status();
      chance=1;
      process();
      getch();
-
 }
 
+//***************************End Of main() Function
+
+//***************************Function: process()   <----
 void process()
 {
  for(EndGame();EndGame()==1;)
@@ -47,12 +53,16 @@ void process()
      }
 }
 
+//***************************Function: status()    <----
+
 void status()
 {
  clrscr();
- cout<<"Player 1\nLEFT\tRIGHT\n"<<Pl1hL<<"\t"<<Pl1hR;
- cout<<"\n\n"<<Pl2hL<<"\t"<<Pl2hR<<"\nLEFT\tRIGHT\nPlayer2";
+ cout<<"    Player 1\nLEFT\tRIGHT\n"<<Pl1hL<<"\t"<<Pl1hR;
+ cout<<"\n\n"<<Pl2hL<<"\t"<<Pl2hR<<"\nLEFT\tRIGHT\n    Player2";
 }
+
+//***************************Function: Player1()   <----
 
 void Player1()
 {
@@ -81,6 +91,8 @@ void Player1()
  ChangeChance();
 }
 
+//***************************Function: Player2()   <----
+
 void Player2()
 {
  cout<<"\n\nChance of ---> PLAYER 2";
@@ -108,6 +120,8 @@ void Player2()
  ChangeChance();
 }
 
+//***************************Function: ChoiceMenuPl1()   <----
+
 void ChoiceMenuPl1()
 {
  cout<<"\n\nCHOICE MENU Function!";
@@ -130,6 +144,8 @@ void ChoiceMenuPl1()
  cin>>SelOUT;
 }
 
+//***************************Function: ChoiceMenuPl2()   <----
+
 void ChoiceMenuPl2()
 {
  cout<<"\n\nCHOICE MENU Function!";
@@ -151,6 +167,8 @@ void ChoiceMenuPl2()
     }
  cin>>SelOUT;
 }
+
+//***************************Function: Cancellation()   <----
 
 void Cancellation()
 {
@@ -186,6 +204,8 @@ void Cancellation()
  process(); //Return to normal Game Play
 }
 
+//***************************Function: ChangeChance()   <----
+
 void ChangeChance()
 {
  if(chance==1)
@@ -194,6 +214,8 @@ void ChangeChance()
     chance=1;
  status();
 }
+
+//***************************Function: Barring()        <----
 
 void Barring()
 {
@@ -207,6 +229,8 @@ void Barring()
     Pl2hR=0;
 }
 
+//***************************Function: EndGame()        <----
+
 int EndGame()
 {
  if(Pl1hL==0 && Pl1hR==0)
@@ -216,3 +240,4 @@ int EndGame()
  return 1;
 }
 
+/***************************    END OF PROGRAM */
